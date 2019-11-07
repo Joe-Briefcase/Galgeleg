@@ -6,4 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".Lose">
 
+    <TextView
+        android:id="@+id/textLose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="107dp"
+        android:text="Du har tabt."
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textLose2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="33dp"
+        android:text="Ordet var:"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/textLose"
+        app:layout_constraintTop_toBottomOf="@+id/textLose" />
+
+    <TextView
+        android:id="@+id/textLose3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="36dp"
+        android:text="Ord"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/textLose2"
+        app:layout_constraintTop_toBottomOf="@+id/textLose2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
