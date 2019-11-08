@@ -7,7 +7,7 @@
     tools:context=".Win">
 
     <TextView
-        android:id="@+id/textWin"
+        android:id="@+id/textGalgeleg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
