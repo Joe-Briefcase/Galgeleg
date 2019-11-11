@@ -2,6 +2,8 @@ package com.example.galgeleg;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class Game extends AppCompatActivity implements View.OnClickListener {
 
     Galgelogik galgelogik = new Galgelogik();
     TextView textInstructions;
@@ -37,6 +39,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        class GetWordsFromInternet extends AsyncTask {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                try {
+                    galgelogik.hentOrdFraDr();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }
+        new GetWordsFromInternet().execute();
+
         textInstructions = findViewById(R.id.textInstructions);
         textWord = findViewById(R.id.textWord);
         textUsedLetters = findViewById(R.id.textUsedLetters);
@@ -50,31 +65,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonNewGame.setOnClickListener(this);
 
         textWord.setText(galgelogik.getSynligtOrd());
+
     }
 
     @Override
     public void onClick(View view) {
-        galgelogik.gætBogstav(textGuess.getText().toString());
 
-        if (galgelogik.erSidsteBogstavKorrekt() == false){
-            imageGalge.setImageResource(textureArrayWin[counter]);
-            counter++;
+        if (view == buttonGuess){
+
+            if (textGuess.getText().length() == 0)
+                return;
+
+            galgelogik.gætBogstav(textGuess.getText().toString());
+
+            if (!galgelogik.erSidsteBogstavKorrekt() && counter < 7) {
+                imageGalge.setImageResource(textureArrayWin[counter]);
+                counter++;
+            }
+
+            textGuess.getText().clear();
+            textUsedLetters.setText(galgelogik.getBrugteBogstaver().toString());
+            textWord.setText(galgelogik.getSynligtOrd());
+            galgelogik.logStatus();
         }
 
-        textGuess.getText().clear();
-        textUsedLetters.setText(galgelogik.getBrugteBogstaver().toString());
-        textWord.setText(galgelogik.getSynligtOrd());
-        galgelogik.logStatus();
-
-        if (galgelogik.erSpilletVundet() == true){
-            textUsedLetters.setText("Du har vundet!");
+        if (galgelogik.erSpilletVundet()){
+            Intent i = new Intent(this, Win.class);
+            i.putExtra("guesses", galgelogik.getAntalForkerteBogstaver());
+            startActivity(i);
         }
 
-        if ((galgelogik.erSpilletTabt() == true || galgelogik.erSpilletVundet() == true) && view == buttonNewGame){
-            finish();
-            overridePendingTransition(0, 0);
-            startActivity(getIntent());
-            overridePendingTransition(0, 0);
+        if (galgelogik.erSpilletTabt()){
+            Intent i = new Intent(this, Lose.class);
+            i.putExtra("word", galgelogik.getOrdet());
+            startActivity(i);
         }
 
         if (view == buttonNewGame){
