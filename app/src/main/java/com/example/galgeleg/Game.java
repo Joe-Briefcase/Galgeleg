@@ -2,6 +2,7 @@ package com.example.galgeleg;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +14,8 @@ import android.widget.TextView;
 
 public class Game extends AppCompatActivity implements View.OnClickListener {
 
-    Galgelogik galgelogik = new Galgelogik();
+    Galgelogik galgelogik;
+    SingletonData singleton;
     TextView textInstructions;
     TextView textWord;
     TextView textUsedLetters;
@@ -39,18 +41,9 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        class GetWordsFromInternet extends AsyncTask {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                try {
-                    galgelogik.hentOrdFraDr();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }
-        new GetWordsFromInternet().execute();
+        singleton = (SingletonData)getApplication();
+
+        galgelogik = singleton.getGalgelogik();
 
         textInstructions = findViewById(R.id.textInstructions);
         textWord = findViewById(R.id.textWord);

@@ -1,16 +1,27 @@
 package com.example.galgeleg;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,12 +37,17 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     ListView listView;
     ArrayList<String> highscores = new ArrayList<>();
     ArrayList<String> scores = new ArrayList<>();
+    SingletonData singleton;
+    LottieAnimationView loading;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        loading = findViewById(R.id.lottie_loading);
+        loading.setVisibility(View.GONE);
 
         // Knapper.
         playButton = findViewById(R.id.button);
@@ -42,6 +58,19 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         highscores.add("6 Mr. Crumb");
         highscores.add("3 Bob");
         highscores.add("4 Robert");
+
+        // Hent ord fra DR
+
+        Context context = getApplicationContext();
+        String text = "Henter ord fra DR";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER,0, 0);
+        toast.show();
+
+        singleton = (SingletonData)getApplication();
+        singleton.getWordsFromDR();
 
         // Initialiser SharedPreferences.
         SharedPreferences preferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
@@ -98,5 +127,22 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             Intent i = new Intent(this, Help.class);
             startActivity(i);
         }
+    }
+
+    public void onDRFinish(){
+        Context context = getApplicationContext();
+        String text = "Færdig";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.CENTER,0, 0);
+        toast.show();
+
+        loading.animate().alpha(0f).setDuration(3000).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                loading.setVisibility(View.GONE);
+            }
+        });
     }
 }

@@ -10,18 +10,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Lose"></activity>
-        <activity android:name=".Win" />
-        <activity android:name=".Help" />
-        <activity android:name=".MainMenu">
+        android:theme="@style/AppTheme"
+        android:name="com.example.galgeleg.SingletonData">
+        <activity android:name=".SingletonData" />
+        <activity
+            android:name=".Lose"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Win"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Help"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainMenu"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Game" />
+        <activity
+            android:name=".Game"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
