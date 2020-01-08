@@ -20,12 +20,21 @@ public class Win extends AppCompatActivity implements View.OnClickListener {
     EditText textSave;
     Button buttonSave;
     int attemptNumber;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor preferencesEditor;
+    String userKey = "userPrefKey";
+    Context context;
+    SingletonData singleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_win);
 
+        singleton = (SingletonData)getApplication();
+
+        context = getApplicationContext();
+        sharedPreferences = context.getSharedPreferences(userKey, Context.MODE_PRIVATE);
         TextView attemptView = findViewById(R.id.textAttemptNumber);
         buttonSave = findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(this);
@@ -36,15 +45,16 @@ public class Win extends AppCompatActivity implements View.OnClickListener {
     }
 
     public void save(){
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        Gson gson = new Gson();
-        String strSave = attemptNumber + " " + textSave.getText().toString();
-        ArrayList<String> highscores = new ArrayList<>();
-        highscores.add(strSave);
-        String str = gson.toJson(highscores);
-        editor.putString("scores", str);
-        editor.apply();
+        User user = new User();
+        user.setUserName(textSave.getText().toString());
+        user.setUserID(2);
+        user.setUserScore(singleton.getGalgelogik().getAntalForkerteBogstaver());
+        user.setUserWord(singleton.getGalgelogik().getOrdet());
+        preferencesEditor = sharedPreferences.edit();
+        Gson gsonSaveUser = new Gson();
+        String jsonSaveUser = gsonSaveUser.toJson(user);
+        preferencesEditor.putString("" + user.getUserID(), jsonSaveUser);
+        preferencesEditor.commit();
     }
 
     @Override

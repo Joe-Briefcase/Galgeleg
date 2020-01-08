@@ -1,5 +1,7 @@
 package com.example.galgeleg;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,9 +10,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -18,7 +22,9 @@ import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -39,6 +45,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     ArrayList<String> scores = new ArrayList<>();
     SingletonData singleton;
     LottieAnimationView loading;
+    ArrayList<User> userArrayList = new ArrayList<>();
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor preferencesEditor;
+    String userKey = "userPrefKey";
+    Context context;
 
 
     @Override
@@ -48,6 +59,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
         loading = findViewById(R.id.lottie_loading);
         loading.setVisibility(View.GONE);
+        context = getApplicationContext();
+        sharedPreferences = context.getSharedPreferences(userKey, Context.MODE_PRIVATE);
 
         // Knapper.
         playButton = findViewById(R.id.button);
@@ -55,9 +68,23 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         playButton.setOnClickListener(this);
         helpButton.setOnClickListener(this);
 
-        highscores.add("6 Mr. Crumb");
-        highscores.add("3 Bob");
-        highscores.add("4 Robert");
+
+        User user = new User();
+        user.setUserName("Bob");
+        user.setUserID(1);
+        user.setUserScore(6);
+        user.setUserWord("Kartoffel");
+        saveUser(user);
+
+//        User user2 = readUser(1);
+//        userArrayList.add(user2);
+
+        int i = 1;
+        while (readUser(i) != null){
+            User userLoad = readUser(i);
+            userArrayList.add(userLoad);
+            i++;
+        }
 
         // Hent ord fra DR
 
@@ -72,47 +99,37 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         singleton = (SingletonData)getApplication();
         singleton.getWordsFromDR();
 
-        // Initialiser SharedPreferences.
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences("myPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        // Gem SharedPreferences.
-        Gson gson = new Gson();
-        String str = gson.toJson(highscores);
-        editor.putString("init", str);
-        editor.apply();
-
-        highscores.clear();
-
-        // Hent SharedPreferences.
-        Gson gson2 = new Gson();
-        String str2 = preferences.getString("init", null);
-        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-        highscores = gson2.fromJson(str2, type);
-
-        Gson gson3 = new Gson();
-        String str3 = preferences.getString("scores", null);
-        if (str3 != null) {
-            scores = gson3.fromJson(str3, type);
-        }
-        highscores.addAll(scores);
-
         // Sortér highscores.
-        Collections.sort(highscores, new Sort());
+        Collections.sort(userArrayList, new Sort());
 
         // ListView
-        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.activity_listview, highscores);
+        listView = findViewById(R.id.listView);
+
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_rank, R.id.name, userArrayList){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                ImageView image = view.findViewById(R.id.img);
+                image.setImageResource(R.drawable.galge);
+                TextView name = view.findViewById(R.id.name);
+                name.setText(userArrayList.get(position).getUserName());
+                TextView score = view.findViewById(R.id.score);
+                score.setText(Integer.toString(userArrayList.get(position).getUserScore()));
+                TextView word = view.findViewById(R.id.word);
+                word.setText(userArrayList.get(position).getUserWord());
+
+                return view;
+            }
+        };
+
         ListView listView = findViewById(R.id.listView);
         listView.setAdapter(adapter);
     }
 
-    class Sort implements Comparator<String> {
-
+    class Sort implements Comparator<User> {
         @Override
-        public int compare(String s1, String s2) {
-            int i = Integer.parseInt(s1.substring(0, 1));
-            int j = Integer.parseInt(s2.substring(0, 1));
-            return i - j;
+        public int compare(User s1, User s2) {
+            return s1.getUserScore() - s2.getUserScore();
         }
     }
 
@@ -127,6 +144,24 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             Intent i = new Intent(this, Help.class);
             startActivity(i);
         }
+    }
+
+    public User readUser(int i){
+        Gson gsonReadUser = new Gson();
+        String jsonReadUser = sharedPreferences.getString("" + i,"");
+        if (jsonReadUser.length() == 0){
+            return null;
+        }
+        User user = gsonReadUser.fromJson(jsonReadUser, User.class);
+        return user;
+    }
+
+    public void saveUser(User user){
+        preferencesEditor = sharedPreferences.edit();
+        Gson gsonSaveUser = new Gson();
+        String jsonSaveUser = gsonSaveUser.toJson(user);
+        preferencesEditor.putString("" + user.getUserID(), jsonSaveUser);
+        preferencesEditor.commit();
     }
 
     public void onDRFinish(){
