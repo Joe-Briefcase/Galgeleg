@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -50,6 +51,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     SharedPreferences.Editor preferencesEditor;
     String userKey = "userPrefKey";
     Context context;
+    MediaPlayer mediaPlayer;
 
 
     @Override
@@ -124,6 +126,10 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
         ListView listView = findViewById(R.id.listView);
         listView.setAdapter(adapter);
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.menu);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
     class Sort implements Comparator<User> {
@@ -136,6 +142,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         if (view == playButton){
+            final MediaPlayer playSound = MediaPlayer.create(this, R.raw.play);
+            playSound.start();
             Intent i = new Intent(this, Game.class);
             startActivity(i);
         }
