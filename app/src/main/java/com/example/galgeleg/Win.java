@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class Win extends AppCompatActivity implements View.OnClickListener {
     String userKey = "userPrefKey";
     Context context;
     SingletonData singleton;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,14 @@ public class Win extends AppCompatActivity implements View.OnClickListener {
         Intent i = getIntent();
         attemptNumber = i.getIntExtra("guesses", 0);
         attemptView.setText("" + attemptNumber);
+        mediaPlayer = MediaPlayer.create(this, R.raw.win);
+        mediaPlayer.start();
     }
 
     public void save(){
         User user = new User();
         user.setUserName(textSave.getText().toString());
-        user.setUserID(2);
+        user.setUserID(singleton.getCurrentID());
         user.setUserScore(singleton.getGalgelogik().getAntalForkerteBogstaver());
         user.setUserWord(singleton.getGalgelogik().getOrdet());
         preferencesEditor = sharedPreferences.edit();

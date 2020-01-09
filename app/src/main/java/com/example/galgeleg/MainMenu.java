@@ -75,11 +75,21 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         user.setUserName("Bob");
         user.setUserID(1);
         user.setUserScore(6);
-        user.setUserWord("Kartoffel");
+        user.setUserWord("kartoffel");
         saveUser(user);
 
-//        User user2 = readUser(1);
-//        userArrayList.add(user2);
+        user.setUserName("Kenned");
+        user.setUserID(3);
+        user.setUserScore(12);
+        user.setUserWord("kage");
+        saveUser(user);
+
+        user.setUserName("Jack");
+        user.setUserID(4);
+        user.setUserScore(2);
+        user.setUserWord("skipperlabskovs");
+        saveUser(user);
+
 
         int i = 1;
         while (readUser(i) != null){
@@ -87,12 +97,13 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             userArrayList.add(userLoad);
             i++;
         }
+        singleton.setCurrentID(i);
 
         // Hent ord fra DR
 
         Context context = getApplicationContext();
         String text = "Henter ord fra DR";
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.setGravity(Gravity.CENTER,0, 0);
@@ -111,8 +122,18 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                ImageView image = view.findViewById(R.id.img);
-                image.setImageResource(R.drawable.galge);
+
+                if (position == 0){
+                    ImageView image = view.findViewById(R.id.img);
+                    image.setImageResource(R.drawable.one);
+                } else if (position == 1){
+                    ImageView image = view.findViewById(R.id.img);
+                    image.setImageResource(R.drawable.two);
+                } else if (position == 2){
+                    ImageView image = view.findViewById(R.id.img);
+                    image.setImageResource(R.drawable.three);
+                }
+
                 TextView name = view.findViewById(R.id.name);
                 name.setText(userArrayList.get(position).getUserName());
                 TextView score = view.findViewById(R.id.score);
@@ -121,6 +142,15 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
                 word.setText(userArrayList.get(position).getUserWord());
 
                 return view;
+            }
+
+            @Override
+            public int getCount() {
+                if (userArrayList != null){
+                    return Math.min(userArrayList.size(), 3);
+                } else {
+                    return 0;
+                }
             }
         };
 

@@ -3,6 +3,7 @@ package com.example.galgeleg;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 public class Lose extends AppCompatActivity implements View.OnClickListener {
 
     Button newGame;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,8 @@ public class Lose extends AppCompatActivity implements View.OnClickListener {
         Intent i = getIntent();
         String str = i.getStringExtra("word");
         word.setText(str);
+        mediaPlayer = MediaPlayer.create(this, R.raw.lose);
+        mediaPlayer.start();
     }
 
     @Override

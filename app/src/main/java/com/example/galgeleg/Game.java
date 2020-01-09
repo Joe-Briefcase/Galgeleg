@@ -2,14 +2,15 @@ package com.example.galgeleg;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+import android.app.Dialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class Game extends AppCompatActivity implements View.OnClickListener {
@@ -21,8 +22,10 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
     TextView textUsedLetters;
     Button buttonGuess;
     Button buttonNewGame;
+    Button buttonChooseNewWord;
     EditText textGuess;
     ImageView imageGalge;
+    ListView listWord;
 
     int [] textureArrayWin = {
             R.drawable.galge,
@@ -52,10 +55,12 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
         textGuess = findViewById(R.id.guessText);
         buttonGuess = findViewById(R.id.guessButton);
         buttonNewGame = findViewById(R.id.buttonNewGame);
+        buttonChooseNewWord = findViewById(R.id.buttonChooseNewWord);
         imageGalge = findViewById(R.id.imageGalge);
 
         buttonGuess.setOnClickListener(this);
         buttonNewGame.setOnClickListener(this);
+        buttonChooseNewWord.setOnClickListener(this);
 
         textWord.setText(galgelogik.getSynligtOrd());
 
@@ -99,6 +104,19 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
             overridePendingTransition(0, 0);
             startActivity(getIntent());
             overridePendingTransition(0, 0);
+        }
+
+        if (view == buttonChooseNewWord){
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.layout_word_dialog);
+            dialog.setTitle("Vælg ord:");
+            listWord = dialog.findViewById(R.id.dialogList);
+            ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_word, galgelogik.muligeOrd);
+            listWord.setAdapter(adapter);
+            dialog.show();
+
+//            galgelogik.nulstil();
+//            textWord.setText(galgelogik.getSynligtOrd());
         }
     }
 }

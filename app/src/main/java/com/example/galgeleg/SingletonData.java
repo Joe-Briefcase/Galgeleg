@@ -17,30 +17,13 @@ public class SingletonData extends Application{
 
     // Galgelogik
     private static Galgelogik galgelogik;
+    private static int currentID;
 
     public SingletonData(){
 
         // Initialisér galgelogik
         galgelogik = new Galgelogik();
     }
-
-
-//    public User readUser(int i){
-//        Gson gsonReadUser = new Gson();
-//        String jsonReadUser = sharedPreferences.getString("" + i,"");
-//        User user = gsonReadUser.fromJson(jsonReadUser, User.class);
-//        return user;
-//    }
-//
-//    public void saveUser(User user){
-//        preferencesEditor = sharedPreferences.edit();
-//        User userTemp = new User();
-//        userTemp = user;
-//        Gson gsonSaveUser = new Gson();
-//        String jsonSaveUser = gsonSaveUser.toJson(userTemp);
-//        preferencesEditor.putString("" + userTemp.getUserID(), jsonSaveUser);
-//        preferencesEditor.commit();
-//    }
 
     public static Galgelogik getGalgelogik() {
         return galgelogik;
@@ -59,5 +42,12 @@ public class SingletonData extends Application{
             }
         }
         new GetWordsFromInternet().execute();
+    }
+
+    public static int getCurrentID() {
+        return currentID;
+    }
+
+    public static void setCurrentID(int currentID) { currentID = currentID;
     }
 }
