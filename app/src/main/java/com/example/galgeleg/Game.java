@@ -1,11 +1,15 @@
 package com.example.galgeleg;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.app.Fragment;
 
-import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,16 +111,9 @@ public class Game extends AppCompatActivity implements View.OnClickListener {
         }
 
         if (view == buttonChooseNewWord){
-            Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.layout_word_dialog);
-            dialog.setTitle("Vælg ord:");
-            listWord = dialog.findViewById(R.id.dialogList);
-            ArrayAdapter adapter = new ArrayAdapter(this, R.layout.list_word, galgelogik.muligeOrd);
-            listWord.setAdapter(adapter);
-            dialog.show();
-
-//            galgelogik.nulstil();
-//            textWord.setText(galgelogik.getSynligtOrd());
+            Intent i = new Intent(this, ChooseWord.class);
+            startActivity(i);
         }
     }
+
 }

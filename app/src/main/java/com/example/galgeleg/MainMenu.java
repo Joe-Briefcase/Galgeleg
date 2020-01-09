@@ -59,10 +59,17 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        loading = findViewById(R.id.lottie_loading);
-        loading.setVisibility(View.GONE);
+        singleton = (SingletonData)getApplication();
         context = getApplicationContext();
         sharedPreferences = context.getSharedPreferences(userKey, Context.MODE_PRIVATE);
+
+        /**
+         * Udkommentér for at nulstille SharedPreferences
+         */
+//        preferencesEditor = sharedPreferences.edit();
+//        preferencesEditor.clear();
+//        preferencesEditor.commit();
+
 
         // Knapper.
         playButton = findViewById(R.id.button);
@@ -73,22 +80,24 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
         User user = new User();
         user.setUserName("Bob");
-        user.setUserID(1);
+        user.setUserID(singleton.getCurrentID());
         user.setUserScore(6);
         user.setUserWord("kartoffel");
         saveUser(user);
 
-        user.setUserName("Kenned");
-        user.setUserID(3);
-        user.setUserScore(12);
-        user.setUserWord("kage");
-        saveUser(user);
+        User user2 = new User();
+        user2.setUserName("Kenned");
+        user2.setUserID(singleton.getCurrentID());
+        user2.setUserScore(12);
+        user2.setUserWord("kage");
+        saveUser(user2);
 
-        user.setUserName("Jack");
-        user.setUserID(4);
-        user.setUserScore(2);
-        user.setUserWord("skipperlabskovs");
-        saveUser(user);
+        User user3 = new User();
+        user3.setUserName("Jack");
+        user3.setUserID(singleton.getCurrentID());
+        user3.setUserScore(2);
+        user3.setUserWord("skipperlabskovs");
+        saveUser(user3);
 
 
         int i = 1;
@@ -97,7 +106,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
             userArrayList.add(userLoad);
             i++;
         }
-        singleton.setCurrentID(i);
 
         // Hent ord fra DR
 
@@ -109,7 +117,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         toast.setGravity(Gravity.CENTER,0, 0);
         toast.show();
 
-        singleton = (SingletonData)getApplication();
         singleton.getWordsFromDR();
 
         // Sortér highscores.
@@ -156,10 +163,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
 
         ListView listView = findViewById(R.id.listView);
         listView.setAdapter(adapter);
-
-        mediaPlayer = MediaPlayer.create(this, R.raw.menu);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
     }
 
     class Sort implements Comparator<User> {
@@ -200,6 +203,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener{
         String jsonSaveUser = gsonSaveUser.toJson(user);
         preferencesEditor.putString("" + user.getUserID(), jsonSaveUser);
         preferencesEditor.commit();
+        singleton.setCurrentID(singleton.getCurrentID() + 1);
     }
 
     public void onDRFinish(){

@@ -20,8 +20,7 @@ public class SingletonData extends Application{
     private static int currentID;
 
     public SingletonData(){
-
-        // Initialisér galgelogik
+        currentID = 1;
         galgelogik = new Galgelogik();
     }
 
@@ -48,6 +47,7 @@ public class SingletonData extends Application{
         return currentID;
     }
 
-    public static void setCurrentID(int currentID) { currentID = currentID;
+    public static void setCurrentID(int i) {
+        currentID = i;
     }
 }

@@ -54,11 +54,13 @@ public class Win extends AppCompatActivity implements View.OnClickListener {
         user.setUserID(singleton.getCurrentID());
         user.setUserScore(singleton.getGalgelogik().getAntalForkerteBogstaver());
         user.setUserWord(singleton.getGalgelogik().getOrdet());
+
         preferencesEditor = sharedPreferences.edit();
         Gson gsonSaveUser = new Gson();
         String jsonSaveUser = gsonSaveUser.toJson(user);
         preferencesEditor.putString("" + user.getUserID(), jsonSaveUser);
         preferencesEditor.commit();
+        singleton.setCurrentID(singleton.getCurrentID() + 1);
     }
 
     @Override

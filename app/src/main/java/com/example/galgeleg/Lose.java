@@ -13,11 +13,16 @@ public class Lose extends AppCompatActivity implements View.OnClickListener {
 
     Button newGame;
     MediaPlayer mediaPlayer;
+    SingletonData singleton;
+    Galgelogik galgelogik;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lose);
+
+        singleton = (SingletonData)getApplication();
+        galgelogik = singleton.getGalgelogik();
 
         newGame = findViewById(R.id.button3);
         newGame.setOnClickListener(this);
@@ -34,6 +39,7 @@ public class Lose extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View view) {
         if (view == newGame){
             Intent i = new Intent(this, Game.class);
+            galgelogik.nulstil();
             startActivity(i);
         }
     }
